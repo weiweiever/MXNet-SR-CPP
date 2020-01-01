@@ -1,3 +1,4 @@
-/cmake-build-debug
-/img/*
-/models/*
+./cmake-build-debug
+./img/*
+./models/*
+./.idea

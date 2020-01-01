@@ -67,83 +67,18 @@ public :
 void GetImageFile(const std::string& image_file,
                   mx_float* image_data, int channels,
                   cv::Size resize_size, const mx_float* mean_data = nullptr) {
-    // Read all kinds of file into a BGR color 3 channels image
-    cv::Mat im_ori = cv::imread(image_file, cv::IMREAD_COLOR);
 
-    if (im_ori.empty()) {
-        std::cerr << "Can't open the image. Please check " << image_file << ". \n";
-        assert(false);
-    }
 
-    cv::Mat im;
-
-    resize(im_ori, im, resize_size);
-
-    im_ori.convertTo(im,CV_32FC3);
-//    int size = im.rows * im.cols * channels;
-//
-//    mx_float* ptr_image_r = image_data;
-//    mx_float* ptr_image_g = image_data + size / 3;
-//    mx_float* ptr_image_b = image_data + size / 3 * 2;
-//
-//    float mean_b, mean_g, mean_r;
-//    mean_b = mean_g = mean_r = DEFAULT_MEAN;
-//
-//    for (int i = 0; i < im.rows; i++) {
-//        auto data = im.ptr<uchar>(i);
-//
-//        for (int j = 0; j < im.cols; j++) {
-//            if (mean_data) {
-//                mean_r = *mean_data;
-//                if (channels > 1) {
-//                    mean_g = *(mean_data + size / 3);
-//                    mean_b = *(mean_data + size / 3 * 2);
-//                }
-//                mean_data++;
-//            }
-//            if (channels > 1) {
-//                *ptr_image_b++ = static_cast<mx_float>(*data++) - mean_b;
-//                *ptr_image_g++ = static_cast<mx_float>(*data++) - mean_g;
-//            }
-//
-//            *ptr_image_r++ = static_cast<mx_float>(*data++) - mean_r;;
-//        }
-//    }
 }
 
 void predict(PredictorHandle pred_hnd, const std::vector<mx_float> &image_data) {
-    auto image_size = image_data.size();
-    // Set Input Image
-    MXPredSetInput(pred_hnd, "data", image_data.data(), static_cast<mx_uint>(image_size));
 
-    // Do Predict Forward
-    MXPredForward(pred_hnd);
-
-    mx_uint output_index = 0;
-
-    mx_uint* shape = nullptr;
-    mx_uint shape_len;
-
-    // Get Output Result
-    MXPredGetOutputShape(pred_hnd, output_index, &shape, &shape_len);
-
-    std::size_t size = 1;
-    for (mx_uint i = 0; i < shape_len; ++i) { size *= shape[i]; }
-
-    std::vector<float> data(size);
-
-    MXPredGetOutput(pred_hnd, output_index, &(data[0]), static_cast<mx_uint>(size));
-
-
-
-    // Release Predictor
-    MXPredFree(pred_hnd);
 
 }
 
 int main(int argc, char* argv[]) {
 
-    std::string test_file("../img/0.jpg");
+    std::string test_file("/home/zhiyu/Projects/facedetect/SR/myImage/qq.jpeg");
 
     // Models path for your model, you have to modify it
     std::string json_file = "../models/WDSR-a-8-x2-symbol.json";
@@ -160,8 +95,8 @@ int main(int argc, char* argv[]) {
     const char** input_keys = input_key;
 
     // Image size and channels
-    int width = 666;
-    int height = 666;
+    int width = 210;
+    int height = 240;
     int channels = 1;
 
     const mx_uint input_shape_indptr[2] = { 0, 4 };
@@ -173,9 +108,6 @@ int main(int argc, char* argv[]) {
     if (json_data.GetLength() == 0 || param_data.GetLength() == 0) {
         return EXIT_FAILURE;
     }
-
-
-
 
 
 
@@ -223,7 +155,7 @@ int main(int argc, char* argv[]) {
     std::vector<mx_float> reg(reg_size);
     MXPredGetOutput(pred_hnd,0,reg.data(),reg_size);
 
-    cv::Mat out(666*2,666*2,CV_32FC1,reg.data());
+    cv::Mat out(height*2,width*2,CV_32FC1,reg.data());
     //out.convertTo(out,CV_8UC1);
 
     cv::Mat dst;

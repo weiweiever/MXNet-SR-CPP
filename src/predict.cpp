@@ -224,8 +224,23 @@ int main(int argc, char* argv[]) {
     MXPredGetOutput(pred_hnd,0,reg.data(),reg_size);
 
     cv::Mat out(666*2,666*2,CV_32FC1,reg.data());
-    out.convertTo(out,CV_8UC1);
-    imshow("out",out);
+    //out.convertTo(out,CV_8UC1);
+
+    cv::Mat dst;
+    std::vector<cv::Mat> dst_chs;
+
+    cv::resize(img_chs[1],img_chs[1],cv::Size(0,0),2,2,cv::INTER_CUBIC);
+    cv::resize(img_chs[2],img_chs[2],cv::Size(0,0),2,2,cv::INTER_CUBIC);
+
+    dst_chs.push_back(out);
+    dst_chs.push_back(img_chs[1]);
+    dst_chs.push_back(img_chs[2]);
+    std::cout<<dst_chs[0].depth()<<"  "<<dst_chs[1].depth()<<" "<<dst_chs[2].depth()<<std::endl;
+    cv::merge(dst_chs,dst);
+    cv::cvtColor(dst,dst,cv::COLOR_YCrCb2BGR);
+    dst.convertTo(dst,CV_8UC3);
+
+    imshow("out",dst);
     cv::waitKey(0);
     // Release Predictor
     MXPredFree(pred_hnd);

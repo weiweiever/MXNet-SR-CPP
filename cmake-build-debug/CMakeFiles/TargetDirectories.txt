@@ -1,3 +1,0 @@
-/home/zhiyu/CLionProjects/mxnet-wdsr/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/zhiyu/CLionProjects/mxnet-wdsr/cmake-build-debug/CMakeFiles/mxnet_wdsr.dir
-/home/zhiyu/CLionProjects/mxnet-wdsr/cmake-build-debug/CMakeFiles/edit_cache.dir

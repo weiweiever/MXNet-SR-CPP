@@ -78,11 +78,11 @@ void predict(PredictorHandle pred_hnd, const std::vector<mx_float> &image_data) 
 
 int main(int argc, char* argv[]) {
 
-    std::string test_file("/home/zhiyu/Projects/facedetect/SR/myImage/qq.jpeg");
+    std::string test_file("/home/zhiyu/Projects/facedetect/SR/myImage/images.jpeg");
 
     // Models path for your model, you have to modify it
-    std::string json_file = "../models/WDSR-a-8-x2-symbol.json";
-    std::string param_file = "../models/WDSR-a-8-x2-0000.params";
+    std::string json_file = "../models/MDSR_x2-symbol.json";
+    std::string param_file = "../models/MDSR_x2-0000.params";
 
     BufferFile json_data(json_file);
     BufferFile param_data(param_file);
@@ -95,8 +95,8 @@ int main(int argc, char* argv[]) {
     const char** input_keys = input_key;
 
     // Image size and channels
-    int width = 210;
-    int height = 240;
+    int width = 261;
+    int height = 193;
     int channels = 1;
 
     const mx_uint input_shape_indptr[2] = { 0, 4 };
@@ -112,17 +112,22 @@ int main(int argc, char* argv[]) {
 
 
     // Read Image Data
+    cv::Mat in;
     std::vector<float> image_data(width * height);
     std::vector<cv::Mat> img_chs;
     //GetImageFile(test_file, image_data.data(), channels, cv::Size(width, height), nd_data);
     cv::Mat im_ori = cv::imread(test_file, cv::IMREAD_COLOR);
-    im_ori.convertTo(im_ori,CV_32FC3);
-    cv::cvtColor(im_ori,im_ori,cv::COLOR_BGR2YCrCb);
-    img_chs.push_back(cv::Mat(width,height,CV_32FC1,image_data.data()));
-    img_chs.push_back(cv::Mat(width,height,CV_32FC1));
-    img_chs.push_back(cv::Mat(width,height,CV_32FC1));
+    im_ori.convertTo(in,CV_32FC3);
+    cv::cvtColor(in,in,cv::COLOR_BGR2YCrCb);
+    //img_chs.push_back(cv::Mat(width,height,CV_32FC1,image_data.data()));
+    //img_chs.push_back(cv::Mat(width,height,CV_32FC1));
+    //img_chs.push_back(cv::Mat(width,height,CV_32FC1));
 
-    cv::split(im_ori,img_chs);
+    cv::split(in,img_chs);
+    cv::Mat y = img_chs[0];
+    image_data = y.reshape(1,1);
+    //cv::imshow("in",img_chs[0]);
+    //cv::waitKey(0);
 
 
 
